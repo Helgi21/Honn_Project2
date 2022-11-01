@@ -56,7 +56,7 @@ class OrderRepository:
         # Check if merchant exists, carry on if it does/ 400 if not with "Merchant does not exist" message
         merch_resp = requests.get(f'/merchants/{order.merchant_id}')
         if merch_resp.status_code == 404:
-            raise HTTPException(status_code=400, detail="Merchant does not exist")+
+            raise HTTPException(status_code=400, detail="Merchant does not exist")
 
         # Check if merchant allows discount
         if merch_resp.json()['allows_discount'] == False and order.discount > 0:
