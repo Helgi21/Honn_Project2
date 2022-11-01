@@ -18,6 +18,6 @@ async def create_order(order: OrderModel,
     return res
 
 @router.get('/orders/{order_id}')
-async def get_order(order_id: int):
-    #Check if order exists
-    pass
+async def get_order(order_id: int,
+                    order_repository: OrderRepository = Depends(Provide[Container.order_repository_provider])):
+    return order_repository.get_order(order_id)

@@ -1,1 +1,54 @@
-.
+# docker-compose up –scale EmailService=2
+version: "3.8"
+services:
+  OrderService:
+    build: ./OrderService
+    ports:
+      - '8000:8000'
+    volumes:
+      - persistance:/persistance
+    depends_on:
+      - rabbitmq
+  
+  MerchantService:
+    build: ./MerchantService
+    ports:
+      - '8001:8001'
+    volumes:
+      - persistance:/persistance
+    depends_on:
+      - rabbitmq
+  
+  BuyerService:
+    build: ./BuyerService
+    ports:
+      - '8002:8002'
+    volumes:
+      - persistance:/persistance
+    depends_on:
+      - rabbitmq
+  
+  EmailService:
+    build: ./EmailService
+    depends_on:
+      - rabbitmq
+  
+  InventoryService:
+    build: ./InventoryService
+    ports:
+      - '8004:8004'
+    volumes:
+      - persistance:/persistance
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    hostname: rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+volumes:
+  persistance:
