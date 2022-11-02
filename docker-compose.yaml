@@ -16,8 +16,6 @@ services:
       - '8001:8001'
     volumes:
       - persistance:/persistance
-    depends_on:
-      - rabbitmq
   
   BuyerService:
     build: ./BuyerService
@@ -25,8 +23,6 @@ services:
       - '8002:8002'
     volumes:
       - persistance:/persistance
-    depends_on:
-      - rabbitmq
   
   EmailService:
     build: ./EmailService
