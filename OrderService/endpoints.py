@@ -14,7 +14,7 @@ async def create_order(order: OrderModel,
                         order_repository: OrderRepository = Depends(Provide[Container.order_repository_provider]),
                         order_event_sender: OrderEventSender = Depends(Provide[Container.order_event_sender_provider])):
     res = order_repository.create_order(order)
-    order_event_sender.send_order_event()
+    order_event_sender.send_event(order)
     return res
 
 @router.get('/orders/{order_id}')
