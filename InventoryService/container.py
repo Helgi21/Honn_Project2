@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 
-from product_repository import EmailRepository
-from inventory_event_listener import EmailEventSender
+from product_repository import ProductRepository
+from inventory_event_listener import InventoryEventListener
 
 
 class Container(containers.DeclarativeContainer):
