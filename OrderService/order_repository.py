@@ -14,7 +14,7 @@ class OrderRepository:
         with open(self.__ORDERS_FILE, 'r+') as f:
             orders = json.load(f)
             # create order id
-            new_order_id = 1
+            new_order_id = 0
             if len(orders) != 0:
                 new_order_id = orders[-1]['id'] + 1
 
