@@ -1,49 +1,39 @@
-from models import ProductModel
-from fastapi import APIRouter, Depends, HTTPException
 import json
-import requests
-
+from models import ProductModel
 class ProductRepository:
     __PRODUCTS_FILE = "../persistance/products.json"
 
     def create_product(self, product: ProductModel):
-        self.__validate()
         self.__file_exists()
-        with open(self.__PRODUCTS_FILE, "r+") as f:
+        with open(self.__PRODUCTS_FILE, 'r+') as f:
             products = json.load(f)
-            
-            new_product_id = 0
-            if len(products) == 0:
-                new_product_id = products[-1]["id"] + 1
-
-            product["id"] = new_product_id
-            products.append(product)
-
+            new_product_id = 1
+            if len(products) != 0:
+                new_product_id = products[-1]['productId'] + 1
+            product.productId = new_product_id
+            product.reserved = 0
+            products.append(product.dict())
             f.seek(0)
             f.truncate()
-
             f.write(json.dumps(products))
         return new_product_id
 
-
-    def get_product(self, id: int):
+    def get_product(self, product_id: int):
         self.__file_exists()
-        response = None
-
         with open(self.__PRODUCTS_FILE, 'r') as f:
             products = json.load(f)
             for product in products:
-                if product["id"] == id:
+                if product['productId'] == product_id:
+                    # Excluding ProductId
                     return {
-                        "id": product.id,
-                        "merchantId": product.merchant_id,
-                        "productName": product.product_name,
-                        "price": product.price,
-                        "quantity": product.quantity
+                        "merchantId": product['merchantId'],
+                        "productName": product['productName'],
+                        "price": product['price'],
+                        "quantity": product['quantity'],
+                        "reserved": product['reserved']
                     }
-
-            raise HTTPException(status_code=404, detail="Product not found")
-
+            return None
+    
     def __file_exists(self) -> None:
         try:
             open(self.__PRODUCTS_FILE, "r").close()

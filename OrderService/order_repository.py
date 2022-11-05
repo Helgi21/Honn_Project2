@@ -71,7 +71,7 @@ class OrderRepository:
         
         # check if product in stock
         inventory_resp = requests.get(f'localhost:8004/inventory/{order.product_id}')
-        if inventory_resp.json()['quantity'] == 0:
+        if (inventory_resp.json()['quantity'] - inventory_resp.json()['reserved']) < order.quantity:
             raise HTTPException(status_code=400, detail="Product is out of stock")
         
         # check if product belongs to merchant
