@@ -73,10 +73,10 @@ def card_valid(card: str) -> bool:
 if __name__ == '__main__':
     connection = get_connection()
     channel = connection.channel()
-    channel.queue_declare(queue='order_creation_queue')
+    channel.queue_declare(queue='order_creation')
 
     channel.basic_consume(
-                    queue='order_creation_queue',
+                    queue='order_creation',
                     auto_ack=True,
                     on_message_callback=callback)
 
