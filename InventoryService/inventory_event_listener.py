@@ -9,20 +9,24 @@ class InventoryEventListener:
         return pika.BlockingConnection(pika.ConnectionParameters('localhost')) # TODO: remember to change to 'rabbit'
 
     def payment_callback(self, ch, method, properties, body):
-        with open('persistance/products.json', 'r+') as f:
+        # Updates the product inventory amount if payment successful
+        body = json.loads(body)
+        with open('../persistance/products.json', 'r+') as f:
             products = json.load(f)
             for product in products:
-                if product['productId'] == body['productId']:
+                if product['productId'] == body['order']['productId']:
                     if body['successful']:
-                        product['quantity'] -= body['quantity']
-                    product['reserved'] -= body['quantity']
+                        product['quantity'] -= body['order']['quantity']
+                    product['reserved'] -= body['order']['quantity']
                     f.seek(0)
                     f.truncate()
                     f.write(json.dumps(products))
                     break
     
     def reserve_callback(self, ch, method, properties, body):
-        with open('persistance/products.json', 'r+') as f:
+        # reserves the product in the order resceived in the event
+        body = json.loads(body)
+        with open('../persistance/products.json', 'r+') as f:
             products = json.load(f)
             for product in products:
                 if product['productId'] == body['productId']:

@@ -1,1 +1,1 @@
-[{"productId": 1, "merchantId": 123, "productName": "some product name", "price": 123.0, "quantity": 20, "reserved": 0}, {"productId": 2, "merchantId": 123, "productName": "some product name", "price": 123.0, "quantity": 20, "reserved": 0}]
+[{"productId": 1, "merchantId": 123, "productName": "some product name", "price": 123.0, "quantity": 18, "reserved": 0}]
