@@ -1,4 +1,3 @@
-from order_event_sender import OrderEventSender
 from fastapi import APIRouter, Depends
 from dependency_injector.wiring import inject, Provide
 
