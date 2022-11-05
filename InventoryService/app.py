@@ -22,6 +22,7 @@ def start_listener(inventory_event_listener: InventoryEventListener =
                     Provide[Container.inventory_event_listener_provider]):
     inventory_event_listener.start()
 
+
 # How the uvicorn github reccomends running it in a thread..
 class Server(uvicorn.Server):
     @contextlib.contextmanager
