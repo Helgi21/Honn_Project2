@@ -18,11 +18,13 @@ def callback(ch, method, properties, body,
             payment_event_sender: PaymentEventSender = Provide[Container.payment_event_sender_provider]):
     print(f" Received {body}")
     payment = json.loads(body)['creditCard']
+    order_id = json.loads(body)['id']
     
-    print(f"Payment {'successful' if card_valid(payment) else 'failed'}")
-    payment_event_sender.send_event(body, card_valid(payment))
+    card_is_valid = card_valid(payment)
+    print(f"Payment {'successful' if card_is_valid else 'failed'}")
+    payment_event_sender.send_event(body, card_is_valid)
     
-    return payment_repository.create_payment(payment)
+    return payment_repository.create_payment(order_id, card_is_valid)
 
 
 # luhn credit card validation
