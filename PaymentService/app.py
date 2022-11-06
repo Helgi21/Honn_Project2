@@ -60,12 +60,13 @@ def card_valid(card: str) -> bool:
 if __name__ == '__main__':
     connection = get_connection()
     channel = connection.channel()
-    channel.queue_declare(queue='order_creation')
+    channel.queue_declare(queue='paym_order_creation')
+
     container = Container()
     container.wire(modules=[__name__])
 
     channel.basic_consume(
-                    queue='order_creation',
+                    queue='paym_order_creation',
                     auto_ack=True,
                     on_message_callback=callback)
 
