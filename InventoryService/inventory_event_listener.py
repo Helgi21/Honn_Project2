@@ -18,8 +18,8 @@ class InventoryEventListener:
             for product in products:
                 if product['productId'] == body['order']['productId']:
                     if body['successful']:
-                        product['quantity'] -= body['order']['quantity']
-                    product['reserved'] -= body['order']['quantity']
+                        product['quantity'] -= 1
+                    product['reserved'] -= 1
                     print(products)
                     f.seek(0)
                     f.truncate()
@@ -34,7 +34,7 @@ class InventoryEventListener:
             products = json.load(f)
             for product in products:
                 if product['productId'] == body['productId']:
-                    product['reserved'] += body['quantity']
+                    product['reserved'] += 1
                     f.seek(0)
                     f.truncate()
                     f.write(json.dumps(products))
@@ -44,7 +44,7 @@ class InventoryEventListener:
         connection = self.get_connection()
         channel = connection.channel()
         channel.queue_declare(queue='inv_order_creation') # Queue with Order-Created events for reserving products
-        channel.queue_declare(queue='payment') # Queue with Payment-Success and Payment-Failure events
+        channel.queue_declare(queue='inv_payment') # Queue with Payment-Success and Payment-Failure events
 
         print("EventListener: running and waiting for payment and reserve events")
         channel.basic_consume(
@@ -54,7 +54,7 @@ class InventoryEventListener:
         )
 
         channel.basic_consume(
-            queue='payment',
+            queue='inv_payment',
             auto_ack=True,
             on_message_callback=self.payment_callback
         )

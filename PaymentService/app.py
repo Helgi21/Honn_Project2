@@ -38,20 +38,16 @@ def luhnCheck(ccNum):
 def card_valid(card: str) -> bool:
     # Validate card number
     if not luhnCheck(card['cardNumber']):
-        print("luhnCheck failed")
         return False
     # Validate card expiration date
     if not 1 <= card['expirationMonth'] <= 12:
-        print("expiration_month failed")
         return False
     
     if len(str(card['expirationYear'])) != 4:
-        print("expiration_year failed")
         return False
     
     # Validate cvc
     if len(str(card['cvc'])) != 3:
-        print("cvc failed")
         return False
     
     return True

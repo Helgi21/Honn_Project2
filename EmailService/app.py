@@ -14,12 +14,12 @@ def get_connection():
     return pika.BlockingConnection(pika.ConnectionParameters('localhost')) #TODO: remember to change to 'rabbit' when running in docker
 
 def get_email_addresses(order):
-    merchant = requests.get(f'http://localhost:8001/merchants/{order["merchantId"]}')
-    buyer = requests.get(f'http://localhost:8002/buyers/{order["buyerId"]}')
-    print(merchant["email"], buyer["email"])
+    merchant = requests.get(f'http://localhost:8001/merchants/{order["merchantId"]}').json()
+    buyer = requests.get(f'http://localhost:8002/buyers/{order["buyerId"]}').json()
+    print(merchant["email"] + buyer["email"])
     return {
         "merchantEmail": 'helgi203@gmail.com', # merchant["email"],
-        "buyerEmail": 'ingolfusibbason@gmail.com' #buyer["email"]
+        "buyerEmail": 'ingolfursibbason@gmail.com' #buyer["email"]
     }
 
 @inject
@@ -28,16 +28,15 @@ def order_callback(ch, method, properties, body,
     data = json.loads(body)
     print(f" Received order event {data}")
 
-    product = requests.get('http://localhost:8000/products/{}'.format(data['product_id']))
+    product = requests.get(f'http://localhost:8004/products/{data["productId"]}').json()
     email_adr = get_email_addresses(data)
     email_data = {
         "email": [email_adr["merchantEmail"], email_adr["buyerEmail"]],
         "subject": "Order has been created",
-        "body": {'id': data['id'], 'product_name': product['productName'], 'price': product['price']}
+        "body": {'id': data['productId'], 'product_name': product['productName'], 'price': product['price']}
     }
 
     email_sender.send_email(email_data)
-
 
 @inject
 def payment_callback(ch, method, properties, body,
@@ -45,19 +44,19 @@ def payment_callback(ch, method, properties, body,
     data = json.loads(body)
     print(f" Received payment event {data}")
     payment_success = data['successful']
-    email_adr = get_email_addresses(data)
+    email_adr = get_email_addresses(data['order'])
 
     if payment_success:
         email_data = {
             "email": [email_adr["merchantEmail"], email_adr["buyerEmail"]],
             "subject": "Order has been purchased",
-            "body": f"Order {data['id']} has been successfully purchased"
+            "body": f"Order {data['order']['orderId']} has been successfully purchased"
         }
     else:
         email_data = {
             "email": [email_adr["merchantEmail"], email_adr["buyerEmail"]],
             "subject": "Order purchase failed",
-            "body": f"Order {data['id']} purchase has failed"
+            "body": f"Order {data['order']['orderId']} purchase has failed"
         }
     
     email_sender.send_email(email_data)    
@@ -86,7 +85,7 @@ if __name__ == '__main__':
     email = "ingolfursibbason@gmail.com"
     subject = "Test"
     content = "This is a test"
-    yag = yagmail.SMTP("honn.project2@gmail.com", "Hunter.2") #TODO: move email and password to env file
+    yag = yagmail.SMTP("ingolfursibbason@gmail.com", "caqbgjtyrossobtn") #TODO: move email and password to env file
     yag.send(email, subject, content)
     
     channel.start_consuming()

@@ -13,8 +13,9 @@ router = APIRouter()
 async def create_order(order: OrderModel, 
                         order_repository: OrderRepository = Depends(Provide[Container.order_repository_provider]),
                         order_event_sender: OrderEventSender = Depends(Provide[Container.order_event_sender_provider])):
+    ccn = order.creditCard.cardNumber
     res = order_repository.create_order(order)
-    order['id'] = res
+    order.creditCard.cardNumber = ccn
     order_event_sender.send_event(order)
     return res
 

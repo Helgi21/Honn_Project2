@@ -1,5 +1,6 @@
 import pika
 from retry import retry
+import json
 
 
 class OrderEventSender:
@@ -20,6 +21,7 @@ class OrderEventSender:
                     queue=queue3.method.queue)
 
     def send_event(self, message):
+        message = json.dumps(message.dict())
         # Publishing to the order_creation exchange instead of a single queue
         self.channel.basic_publish(
                         exchange='order_creation',
@@ -28,4 +30,4 @@ class OrderEventSender:
 
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
     def __get_connection(self):
-        return pika.BlockingConnection(pika.ConnectionParameters('rabbit'))
+        return pika.BlockingConnection(pika.ConnectionParameters('localhost')) # TODO: remember to change to 'rabbit' when containerizing
