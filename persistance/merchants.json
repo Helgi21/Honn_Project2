@@ -1,1 +1,0 @@
-[{"merchantId": 1, "name": "John Johnson", "ssn": "4000000000", "email": "email@email.com", "phoneNumber": "1234567", "allowsDiscount": true}, {"merchantId": 2, "name": "man no 2", "ssn": "1234567890", "email": "good@email.com", "phoneNumber": "7654321", "allowsDiscount": false}]

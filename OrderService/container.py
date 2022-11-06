@@ -9,6 +9,6 @@ class Container(containers.DeclarativeContainer):
         OrderEventSender
     )
 
-    message_repository_provider = providers.Singleton(
+    order_repository_provider = providers.Singleton(
         OrderRepository
     )

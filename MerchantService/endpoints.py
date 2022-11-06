@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.post('/merchants')
 @inject
-async def create_merchant(merchant: MerchantModel, 
+async def create_merchant(merchant, 
                             merchant_repository: MerchantRepository = Depends(Provide[Container.merchant_repository_provider]),):
     res = merchant_repository.create_merchant(merchant)
     return res

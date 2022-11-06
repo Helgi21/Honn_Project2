@@ -11,10 +11,13 @@ class OrderEventSender:
 
         queue1 = self.channel.queue_declare(queue='inv_order_creation')
         queue2 = self.channel.queue_declare(queue='paym_order_creation')
+        queue3 = self.channel.queue_declare(queue='email_order_creation')
         self.channel.queue_bind(exchange='order_creation',
                     queue=queue1.method.queue)
         self.channel.queue_bind(exchange='order_creation',
                     queue=queue2.method.queue)
+        self.channel.queue_bind(exchange='order_creation',
+                    queue=queue3.method.queue)
 
     def send_event(self, message):
         # Publishing to the order_creation exchange instead of a single queue
