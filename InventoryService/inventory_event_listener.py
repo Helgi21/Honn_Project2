@@ -43,12 +43,12 @@ class InventoryEventListener:
     def start(self):
         connection = self.get_connection()
         channel = connection.channel()
-        channel.queue_declare(queue='order_creation') # Queue with Order-Created events for reserving products
+        channel.queue_declare(queue='inv_order_creation') # Queue with Order-Created events for reserving products
         channel.queue_declare(queue='payment') # Queue with Payment-Success and Payment-Failure events
 
         print("EventListener: running and waiting for payment and reserve events")
         channel.basic_consume(
-            queue='order_creation',
+            queue='inv_order_creation',
             auto_ack=True,
             on_message_callback=self.reserve_callback
         )
