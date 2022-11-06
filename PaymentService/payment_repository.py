@@ -1,9 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
 import json
-import requests
 
 class PaymentRepository:
-    __PAYMENTS_FILE = "../persistance/orders.json"
+    __PAYMENTS_FILE = "../persistance/payments.json"
 
     def create_payment(self, id: int, valid_bolean: bool):
         self.__file_exists()

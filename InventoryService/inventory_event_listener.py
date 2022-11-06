@@ -1,3 +1,4 @@
+from functools import lru_cache
 import pika
 from retry import retry
 import json
@@ -10,6 +11,7 @@ class InventoryEventListener:
 
     def payment_callback(self, ch, method, properties, body):
         # Updates the product inventory amount if payment successful
+        print("received payment event")
         body = json.loads(body)
         with open('../persistance/products.json', 'r+') as f:
             products = json.load(f)
@@ -18,6 +20,7 @@ class InventoryEventListener:
                     if body['successful']:
                         product['quantity'] -= body['order']['quantity']
                     product['reserved'] -= body['order']['quantity']
+                    print(products)
                     f.seek(0)
                     f.truncate()
                     f.write(json.dumps(products))
@@ -25,6 +28,7 @@ class InventoryEventListener:
     
     def reserve_callback(self, ch, method, properties, body):
         # reserves the product in the order resceived in the event
+        print("received reserve event")
         body = json.loads(body)
         with open('../persistance/products.json', 'r+') as f:
             products = json.load(f)
