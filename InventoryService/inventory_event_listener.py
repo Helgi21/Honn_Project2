@@ -1,3 +1,4 @@
+from functools import lru_cache
 import pika
 from retry import retry
 import json
@@ -9,20 +10,27 @@ class InventoryEventListener:
         return pika.BlockingConnection(pika.ConnectionParameters('localhost')) # TODO: remember to change to 'rabbit'
 
     def payment_callback(self, ch, method, properties, body):
-        with open('persistance/products.json', 'r+') as f:
+        # Updates the product inventory amount if payment successful
+        print("received payment event")
+        body = json.loads(body)
+        with open('../persistance/products.json', 'r+') as f:
             products = json.load(f)
             for product in products:
-                if product['productId'] == body['productId']:
+                if product['productId'] == body['order']['productId']:
                     if body['successful']:
-                        product['quantity'] -= body['quantity']
-                    product['reserved'] -= body['quantity']
+                        product['quantity'] -= body['order']['quantity']
+                    product['reserved'] -= body['order']['quantity']
+                    print(products)
                     f.seek(0)
                     f.truncate()
                     f.write(json.dumps(products))
                     break
     
     def reserve_callback(self, ch, method, properties, body):
-        with open('persistance/products.json', 'r+') as f:
+        # reserves the product in the order resceived in the event
+        print("received reserve event")
+        body = json.loads(body)
+        with open('../persistance/products.json', 'r+') as f:
             products = json.load(f)
             for product in products:
                 if product['productId'] == body['productId']:

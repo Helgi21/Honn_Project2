@@ -13,9 +13,9 @@ class BuyerRepository:
             buyers = json.load(f)
             new_buyer_id = 1
             if len(buyers) != 0:
-                new_buyer_id = buyers[-1]['id'] + 1
-            buyer['id'] = new_buyer_id
-            buyers.append(buyer)
+                new_buyer_id = buyers[-1]['buyerId'] + 1
+            buyer.buyerId = new_buyer_id
+            buyers.append(buyer.dict())
             f.seek(0)
             f.truncate()
             f.write(json.dumps(buyers))
@@ -26,7 +26,7 @@ class BuyerRepository:
         with open(self.__BUYERS_FILE, 'r') as f:
             buyers = json.load(f)
             for buyer in buyers:
-                if buyer['id'] == buyer_id:
+                if buyer['buyerId'] == buyer_id:
                     return {
                         "name": buyer['name'],
                         "ssn": buyer['ssn'],

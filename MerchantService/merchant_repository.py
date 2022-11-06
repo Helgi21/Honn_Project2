@@ -15,9 +15,9 @@ class MerchantRepository:
             merchants = json.load(f)
             new_merchant_id = 1
             if len(merchants) != 0:
-                new_merchant_id = merchants[-1]['id'] + 1
-            merchant['id'] = new_merchant_id
-            merchants.append(merchant)
+                new_merchant_id = merchants[-1]['merchantId'] + 1
+            merchant.merchantId = new_merchant_id
+            merchants.append(merchant.dict())
             f.seek(0)
             f.truncate()
             f.write(json.dumps(merchants))
@@ -29,8 +29,14 @@ class MerchantRepository:
         with open(self.__MERCHANTS_FILE, 'r') as f:
             merchants = json.load(f)
             for merchant in merchants:
-                if merchant['id'] == merchant_id:
-                    return merchant
+                if merchant['merchantId'] == merchant_id:
+                    return {
+                                "name": merchant['name'],
+                                "ssn": merchant['ssn'],
+                                "email": merchant['email'],
+                                "phoneNumber": merchant['phoneNumber'],
+                                "allowsDiscount": merchant['allowsDiscount']
+                            }
         raise HTTPException(status_code=404, detail="Merchant not found")
             
     def __file_exists(self) -> None:
