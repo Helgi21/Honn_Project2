@@ -7,7 +7,7 @@ class InventoryEventListener:
     
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
     def get_connection(self):
-        return pika.BlockingConnection(pika.ConnectionParameters('localhost')) # TODO: remember to change to 'rabbit'
+        return pika.BlockingConnection(pika.ConnectionParameters('rabbit')) # TODO: remember to change to 'rabbit'
 
     def payment_callback(self, ch, method, properties, body):
         # Updates the product inventory amount if payment successful

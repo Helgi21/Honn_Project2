@@ -1,5 +1,8 @@
+from fastapi import HTTPException
 import json
 from models import ProductModel
+
+
 class ProductRepository:
     __PRODUCTS_FILE = "../persistance/products.json"
 
@@ -32,7 +35,7 @@ class ProductRepository:
                         "quantity": product['quantity'],
                         "reserved": product['reserved']
                     }
-            return None
+        raise HTTPException(status_code=404, detail="Product does not exist")
     
     def __file_exists(self) -> None:
         try:

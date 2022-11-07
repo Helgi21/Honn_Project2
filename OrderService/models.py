@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Union
 
 
 class CardModel(BaseModel): 
@@ -13,5 +13,5 @@ class OrderModel(BaseModel):
     productId: int
     merchantId: int
     buyerId: int
-    discount: float|None
+    discount: Union[float,None]
     creditCard: CardModel

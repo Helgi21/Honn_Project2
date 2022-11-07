@@ -1,9 +1,7 @@
 from models import OrderModel
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import HTTPException
 import json
 import requests
-
-router = APIRouter()
 
 class OrderRepository:
     __ORDERS_FILE = "../persistance/orders.json"
@@ -41,7 +39,7 @@ class OrderRepository:
             print(orders)
             for order in orders:
                 if order["orderId"] == id: 
-                    prod_response = requests.get(f'http://localhost:8004/products/{order["productId"]}')  
+                    prod_response = requests.get(f'http://inventory_service:8004/products/{order["productId"]}')  
                     procuct_price = prod_response.json()['price']             
                     return {
                         'productId': order['productId'],
@@ -50,11 +48,11 @@ class OrderRepository:
                         'cardNumber': order['creditCard']['cardNumber'],
                         'totalPrice': round(procuct_price * (1 - order['discount']), 2)
                     }
-            raise HTTPException(status_code=404, detail="Order does not exist")
+        raise HTTPException(status_code=404, detail="Order does not exist")
 
     def __validate(self, order: OrderModel):
         # Check if merchant exists, carry on if it does/ 400 if not with "Merchant does not exist" message
-        merch_resp = requests.get(f'http://localhost:8001/merchants/{order.merchantId}')
+        merch_resp = requests.get(f'http://merchant_service:8001/merchants/{order.merchantId}')
         if merch_resp.status_code == 404:
             raise HTTPException(status_code=400, detail="Merchant does not exist")
 
@@ -63,12 +61,12 @@ class OrderRepository:
             raise HTTPException(status_code=400, detail="Merchant does not allow discount")
         
         # Check if buyer exists, carry on if it does/ 400 if not with "Buyer does not exist" message
-        buyer_resp = requests.get(f'http://localhost:8002/buyers/{order.buyerId}')
+        buyer_resp = requests.get(f'http://buyer_service:8002/buyers/{order.buyerId}')
         if buyer_resp.status_code == 404:
             raise HTTPException(status_code=400, detail="Buyer does not exist")
         
         # Check if product exists, carry on if it does/ 400 if not with "Product does not exist" message
-        product_resp = requests.get(f'http://localhost:8004/products/{order.productId}')
+        product_resp = requests.get(f'http://inventory_service:8004/products/{order.productId}')
         if product_resp.status_code == 404:
             raise HTTPException(status_code=400, detail="Product does not exist")
         

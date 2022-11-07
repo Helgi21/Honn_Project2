@@ -1,7 +1,6 @@
 from models import MerchantModel
 from fastapi import APIRouter, Depends, HTTPException
 import json
-import requests
 
 router = APIRouter()
 
@@ -37,7 +36,7 @@ class MerchantRepository:
                                 "phoneNumber": merchant['phoneNumber'],
                                 "allowsDiscount": merchant['allowsDiscount']
                             }
-        raise HTTPException(status_code=404, detail="Merchant not found")
+        raise HTTPException(status_code=404, detail="Merchant does not exist")
             
     def __file_exists(self) -> None:
         try:

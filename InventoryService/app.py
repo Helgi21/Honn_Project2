@@ -4,7 +4,6 @@ import time
 import threading
 from fastapi import FastAPI
 from dependency_injector.wiring import inject, Provide
-from threading import Thread
 
 from container import Container
 import endpoints

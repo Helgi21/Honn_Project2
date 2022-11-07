@@ -30,4 +30,4 @@ class OrderEventSender:
 
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
     def __get_connection(self):
-        return pika.BlockingConnection(pika.ConnectionParameters('localhost')) # TODO: remember to change to 'rabbit' when containerizing
+        return pika.BlockingConnection(pika.ConnectionParameters('rabbit')) # TODO: remember to change to 'rabbit' when containerizing

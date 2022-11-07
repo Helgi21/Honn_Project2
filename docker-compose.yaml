@@ -1,7 +1,7 @@
 # docker-compose up –scale EmailService=2
 version: "3.8"
 services:
-  OrderService:
+  order_service:
     build: ./OrderService
     ports:
       - '8000:8000'
@@ -10,26 +10,26 @@ services:
     depends_on:
       - rabbitmq
   
-  MerchantService:
+  merchant_service:
     build: ./MerchantService
     ports:
       - '8001:8001'
     volumes:
       - persistance:/persistance
   
-  BuyerService:
+  buyer_service:
     build: ./BuyerService
     ports:
       - '8002:8002'
     volumes:
       - persistance:/persistance
   
-  EmailService:
+  email_service:
     build: ./EmailService
     depends_on:
       - rabbitmq
   
-  InventoryService:
+  inventory_service:
     build: ./InventoryService
     ports:
       - '8004:8004'

@@ -11,11 +11,11 @@ from container import Container
 
 @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
 def get_connection():
-    return pika.BlockingConnection(pika.ConnectionParameters('localhost')) #TODO: remember to change to 'rabbit' when running in docker
+    return pika.BlockingConnection(pika.ConnectionParameters('rabbit')) #TODO: remember to change to 'rabbit' when running in docker
 
 def get_email_addresses(order):
-    merchant = requests.get(f'http://localhost:8001/merchants/{order["merchantId"]}').json()
-    buyer = requests.get(f'http://localhost:8002/buyers/{order["buyerId"]}').json()
+    merchant = requests.get(f'http://merchant_service:8001/merchants/{order["merchantId"]}').json()
+    buyer = requests.get(f'http://buyer_service:8002/buyers/{order["buyerId"]}').json()
     print(merchant["email"] + buyer["email"])
     return {
         "merchantEmail": 'helgi203@gmail.com', # merchant["email"],
@@ -28,7 +28,7 @@ def order_callback(ch, method, properties, body,
     data = json.loads(body)
     print(f" Received order event {data}")
 
-    product = requests.get(f'http://localhost:8004/products/{data["productId"]}').json()
+    product = requests.get(f'http://inventory_service:8004/products/{data["productId"]}').json()
     email_adr = get_email_addresses(data)
     email_data = {
         "email": [email_adr["merchantEmail"], email_adr["buyerEmail"]],
@@ -81,11 +81,4 @@ if __name__ == '__main__':
         auto_ack = True,
         on_message_callback = payment_callback
     )
-
-    email = "ingolfursibbason@gmail.com"
-    subject = "Test"
-    content = "This is a test"
-    yag = yagmail.SMTP("ingolfursibbason@gmail.com", "caqbgjtyrossobtn") #TODO: move email and password to env file
-    yag.send(email, subject, content)
-    
     channel.start_consuming()

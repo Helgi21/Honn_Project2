@@ -25,4 +25,4 @@ class PaymentEventSender:
 
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
     def __get_connection(self):
-        return pika.BlockingConnection(pika.ConnectionParameters('localhost')) #TODO: Remember to change to 'rabbit' when containerized
+        return pika.BlockingConnection(pika.ConnectionParameters('rabbit')) #TODO: Remember to change to 'rabbit' when containerized

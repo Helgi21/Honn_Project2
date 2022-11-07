@@ -10,7 +10,7 @@ from container import Container
 
 @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
 def get_connection():
-    return pika.BlockingConnection(pika.ConnectionParameters('localhost')) # TODO: remember to change 'localhost' to 'rabbit' when containerized
+    return pika.BlockingConnection(pika.ConnectionParameters('rabbit')) # TODO: remember to change 'localhost' to 'rabbit' when containerized
 
 @inject
 def callback(ch, method, properties, body, 

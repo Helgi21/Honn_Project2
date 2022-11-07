@@ -1,7 +1,6 @@
 import pika 
 from retry import retry
 import yagmail
-import requests
 
 class EmailSender:
     def send_email(self, data):    
