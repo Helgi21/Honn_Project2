@@ -10,7 +10,7 @@ from container import Container
 
 @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
 def get_connection():
-    return pika.BlockingConnection(pika.ConnectionParameters('rabbit')) # TODO: remember to change 'localhost' to 'rabbit' when containerized
+    return pika.BlockingConnection(pika.ConnectionParameters('rabbit'))
 
 @inject
 def callback(ch, method, properties, body, 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     container.wire(modules=[__name__])
 
     channel.basic_consume(
-                    queue='paym_order_creation',
+                    queue='',
                     auto_ack=True,
                     on_message_callback=callback)
 

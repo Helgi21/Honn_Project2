@@ -45,5 +45,3 @@ if __name__ == '__main__':
     server = Server(config=config)
     with server.run_in_thread():
         start_listener()
-        while True:
-            pass

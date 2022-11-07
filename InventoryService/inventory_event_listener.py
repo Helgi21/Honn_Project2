@@ -1,4 +1,3 @@
-from functools import lru_cache
 import pika
 from retry import retry
 import json
@@ -7,7 +6,7 @@ class InventoryEventListener:
     
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
     def get_connection(self):
-        return pika.BlockingConnection(pika.ConnectionParameters('rabbit')) # TODO: remember to change to 'rabbit'
+        return pika.BlockingConnection(pika.ConnectionParameters('rabbit'))
 
     def payment_callback(self, ch, method, properties, body):
         # Updates the product inventory amount if payment successful
@@ -44,7 +43,7 @@ class InventoryEventListener:
         connection = self.get_connection()
         channel = connection.channel()
         channel.queue_declare(queue='inv_order_creation') # Queue with Order-Created events for reserving products
-        channel.queue_declare(queue='inv_payment') # Queue with Payment-Success and Payment-Failure events
+        channel.queue_declare(queue='inv_payment', durable=True) # Queue with Payment-Success and Payment-Failure events
 
         print("EventListener: running and waiting for payment and reserve events")
         channel.basic_consume(

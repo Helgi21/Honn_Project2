@@ -1,4 +1,4 @@
-# docker-compose up –scale EmailService=2
+# docker-compose up –scale email_service=2
 version: "3.8"
 services:
   order_service:
@@ -23,7 +23,14 @@ services:
       - '8002:8002'
     volumes:
       - persistance:/persistance
-  
+
+  payment_service:
+    build: ./PaymentService 
+    volumes:
+      - persistance:/persistance
+    depends_on:
+      - rabbitmq
+
   email_service:
     build: ./EmailService
     depends_on:

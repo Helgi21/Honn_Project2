@@ -36,7 +36,6 @@ class OrderRepository:
         with open(self.__ORDERS_FILE, "r") as f:
             #Check if order exists, then return it with total price and only the last 4 digits of the credit card
             orders = json.load(f)
-            print(orders)
             for order in orders:
                 if order["orderId"] == id: 
                     prod_response = requests.get(f'http://inventory_service:8004/products/{order["productId"]}')  
